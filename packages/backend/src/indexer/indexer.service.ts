@@ -27,6 +27,12 @@ export class IndexerService implements OnModuleInit {
 
   async onModuleInit() {
     if (this.provider && this.registryAddress) {
+      const network = await this.provider.getNetwork();
+      const blockNumber = await this.provider.getBlockNumber();
+      console.log(`[Indexer Debug] Connected to Chain ID: ${network.chainId}`);
+      console.log(`[Indexer Debug] Current Block: ${blockNumber}`);
+      console.log(`[Indexer Debug] RPC URL: ${this.configService.get<string>('BASE_SEPOLIA_RPC_URL')}`);
+
       await this.syncHistoricalEvents();
       this.startListening();
     }
@@ -83,6 +89,7 @@ export class IndexerService implements OnModuleInit {
       tokenAddress,
       pairId,
       ipfsCid: ipfsCID,
+      conditionJson: {},
       status: 'active'
     });
 

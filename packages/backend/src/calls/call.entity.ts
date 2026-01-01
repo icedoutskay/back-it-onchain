@@ -48,7 +48,7 @@ export class Call {
   @Column('timestamptz')
   endTs: Date;
 
-  @Column('jsonb')
+  @Column('jsonb', { nullable: true })
   conditionJson: any;
 
   @Column({ default: 'OPEN' })
