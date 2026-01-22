@@ -5,7 +5,52 @@ interface CallCardProps {
   call: any;
 }
 
+const CHAIN_CONFIG = {
+  base: {
+    name: "Base",
+    explorer: "https://basescan.org",
+    color: "bg-blue-500",
+    textColor: "text-blue-500",
+    borderColor: "border-blue-500/20",
+    bgColor: "bg-blue-500/10",
+  },
+  stellar: {
+    name: "Stellar",
+    explorer: "https://stellar.expert/explorer/public",
+    color: "bg-purple-500",
+    textColor: "text-purple-500",
+    borderColor: "border-purple-500/20",
+    bgColor: "bg-purple-500/10",
+  },
+};
+
+function ChainBadge({ chain }: { chain: "base" | "stellar" }) {
+  const config = CHAIN_CONFIG[chain] || CHAIN_CONFIG.base;
+  return (
+    <div
+      className={`px-2 py-1 rounded-full ${config.bgColor} ${config.textColor} text-xs font-bold border ${config.borderColor} flex items-center gap-1`}
+    >
+      <div className={`w-2 h-2 rounded-full ${config.color}`} />
+      {config.name}
+    </div>
+  );
+}
+
+function getExplorerUrl(chain: "base" | "stellar", address: string): string {
+  const config = CHAIN_CONFIG[chain] || CHAIN_CONFIG.base;
+  if (chain === "stellar") {
+    return `${config.explorer}/account/${address}`;
+  }
+  return `${config.explorer}/address/${address}`;
+}
+
 export function CallCard({ call }: CallCardProps) {
+  const chain = call.chain || "base";
+  const explorerUrl = getExplorerUrl(
+    chain,
+    call.creatorWallet || call.creator?.wallet,
+  );
+
   return (
     <Link href={`/calls/${call.id}`} className="block group">
       <div className="bg-card border border-border rounded-xl p-5 hover:border-primary/50 transition-all hover:shadow-lg hover:shadow-primary/5">
@@ -27,8 +72,11 @@ export function CallCard({ call }: CallCardProps) {
               </div>
             </div>
           </div>
-          <div className="px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold border border-green-500/20">
-            {call.status}
+          <div className="flex items-center gap-2">
+            <ChainBadge chain={chain} />
+            <div className="px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold border border-green-500/20">
+              {call.status}
+            </div>
           </div>
         </div>
 
@@ -37,10 +85,6 @@ export function CallCard({ call }: CallCardProps) {
         </h3>
 
         <div className="flex flex-wrap gap-3 mb-4">
-          <Badge
-            icon={call.chain === "stellar" ? <span>🚀</span> : <span>🔵</span>}
-            label={call.chain === "stellar" ? "Stellar" : "Base"}
-          />
           <Badge
             icon={<TrendingUp className="h-3 w-3" />}
             label={`${call.stakeToken} Pool`}
@@ -70,9 +114,20 @@ export function CallCard({ call }: CallCardProps) {
               NO
             </div>
           </div>
-          <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-primary transition-colors">
-            <MessageSquare className="h-3 w-3" />
-            {call.comments || 0} Comments
+          <div className="flex items-center gap-3">
+            <a
+              href={explorerUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="text-xs text-muted-foreground hover:text-primary transition-colors"
+            >
+              View on Explorer ↗
+            </a>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-primary transition-colors">
+              <MessageSquare className="h-3 w-3" />
+              {call.comments || 0} Comments
+            </div>
           </div>
         </div>
       </div>
