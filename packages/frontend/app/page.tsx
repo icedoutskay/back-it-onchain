@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowRight, TrendingUp, ShieldCheck, Users } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ChainSelector } from "@/components/ChainSelector";
+import { WalletConnectButton } from "@/components/WalletConnectButton";
 
 export default function LandingPage() {
   return (
@@ -17,12 +18,7 @@ export default function LandingPage() {
             >
               Explore
             </Link>
-            <Link
-              href="/onboarding"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-            >
-              Connect Wallet
-            </Link>
+            <WalletConnectButton />
           </div>
         </div>
       </header>
