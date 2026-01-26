@@ -11,7 +11,11 @@ contract Paymaster is Ownable {
         // UserOperation calldata userOp,
         // bytes32 userOpHash,
         // uint256 maxCost
-    ) external view returns (bytes memory context, uint256 validationData) {
+    )
+        external
+        view
+        returns (bytes memory context, uint256 validationData)
+    {
         // Allow everything for MVP
         return ("", 0);
     }

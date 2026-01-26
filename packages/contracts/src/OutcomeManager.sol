@@ -10,8 +10,9 @@ contract OutcomeManager is EIP712, Ownable {
     using ECDSA for bytes32;
 
     CallRegistry public registry;
-    
-    bytes32 public constant OUTCOME_TYPEHASH = keccak256("Outcome(uint256 callId,bool outcome,uint256 finalPrice,uint256 timestamp)");
+
+    bytes32 public constant OUTCOME_TYPEHASH =
+        keccak256("Outcome(uint256 callId,bool outcome,uint256 finalPrice,uint256 timestamp)");
     mapping(address => bool) public authorizedOracle;
     mapping(uint256 => bool) public settled;
 
@@ -34,7 +35,7 @@ contract OutcomeManager is EIP712, Ownable {
         bytes calldata signature
     ) external {
         require(!settled[callId], "Already settled");
-        
+
         // Verify call exists and ended
         (,,,,, uint256 endTs,,,, bool isSettled,,) = registry.calls(callId);
         require(endTs > 0, "Call not found");
@@ -44,13 +45,13 @@ contract OutcomeManager is EIP712, Ownable {
         bytes32 structHash = keccak256(abi.encode(OUTCOME_TYPEHASH, callId, outcome, finalPrice, timestamp));
         bytes32 digest = _hashTypedDataV4(structHash);
         address signer = ECDSA.recover(digest, signature);
-        
+
         require(authorizedOracle[signer], "Invalid oracle");
-        
+
         settled[callId] = true;
         // In a real implementation, we would call back to Registry to update state
         // For this MVP, we track settlement here and allow withdrawals based on this state
-        
+
         emit OutcomeSubmitted(callId, outcome, finalPrice, signer);
     }
 

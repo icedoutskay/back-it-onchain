@@ -40,12 +40,7 @@ contract CallRegistry is ReentrancyGuard {
         string ipfsCID
     );
 
-    event StakeAdded(
-        uint256 indexed callId,
-        address indexed staker,
-        bool position,
-        uint256 amount
-    );
+    event StakeAdded(uint256 indexed callId, address indexed staker, bool position, uint256 amount);
 
     function createCall(
         address _stakeToken,
@@ -80,15 +75,7 @@ contract CallRegistry is ReentrancyGuard {
         userStakes[callId][msg.sender][true] = _stakeAmount;
 
         emit CallCreated(
-            callId,
-            msg.sender,
-            _stakeToken,
-            _stakeAmount,
-            block.timestamp,
-            _endTs,
-            _tokenAddress,
-            _pairId,
-            _ipfsCID
+            callId, msg.sender, _stakeToken, _stakeAmount, block.timestamp, _endTs, _tokenAddress, _pairId, _ipfsCID
         );
     }
 
@@ -100,13 +87,13 @@ contract CallRegistry is ReentrancyGuard {
         require(_amount > 0, "Amount must be > 0");
 
         IERC20(call.stakeToken).safeTransferFrom(msg.sender, address(this), _amount);
-        
+
         if (_position) {
             call.totalStakeYes += _amount;
         } else {
             call.totalStakeNo += _amount;
         }
-        
+
         userStakes[_callId][msg.sender][_position] += _amount;
 
         emit StakeAdded(_callId, msg.sender, _position, _amount);
