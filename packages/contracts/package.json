@@ -5,6 +5,7 @@
     "scripts": {
         "dev": "./deploy-local.sh",
         "build": "forge build",
-        "test": "forge test"
+        "test": "forge test",
+        "lint": "forge fmt --check"
     }
 }
