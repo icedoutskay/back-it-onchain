@@ -14,15 +14,27 @@ import {
   Identity,
   EthBalance,
 } from "@coinbase/onchainkit/identity";
+import { useAccount } from "wagmi";
 
 import { ChainSelector } from "./ChainSelector";
+import { NotificationBell } from "./NotificationBell";
+import { useChain } from "./ChainProvider";
+import { useStellarWallet } from "./StellarWalletProvider";
 
 export function Navbar() {
+  const { address: evmAddress, isConnected: isEvmConnected } = useAccount();
+  const { selectedChain } = useChain();
+  const { publicKey: stellarAddress, isConnected: isStellarConnected } = useStellarWallet();
+
+  const address = selectedChain === "stellar" ? stellarAddress : evmAddress;
+  const isConnected = selectedChain === "stellar" ? isStellarConnected : isEvmConnected;
+
   return (
     <div className="flex justify-between items-center py-4 px-6 bg-white shadow-sm mb-8">
       <div className="text-xl font-bold text-indigo-600">Back It (Onchain)</div>
       <div className="flex items-center gap-4">
         <ChainSelector />
+        {isConnected && address && <NotificationBell userWallet={address} />}
         <Wallet>
           <ConnectWallet>
             <Avatar className="h-6 w-6" />
