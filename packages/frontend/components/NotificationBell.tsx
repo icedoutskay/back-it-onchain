@@ -79,6 +79,7 @@ export function NotificationBell({
 
   // Mark notification as read
   const handleMarkAsRead = async (notificationId: string) => {
+    if (!userWallet) return;
     try {
       await fetch(`http://localhost:3001/notifications/${notificationId}/read`, {
         method: 'PATCH',
@@ -100,6 +101,7 @@ export function NotificationBell({
 
   // Mark all as read
   const handleMarkAllRead = async () => {
+    if (!userWallet) return;
     try {
       await fetch(`http://localhost:3001/notifications/mark-all-read`, {
         method: 'PATCH',
