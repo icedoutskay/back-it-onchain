@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { User, CheckCircle2, ArrowRight, Loader2 } from 'lucide-react';
 import { Logo } from "@/components/logo";
@@ -20,6 +20,20 @@ import { useChain } from "@/components/ChainProvider";
 import { useStellarWallet } from "@/components/StellarWalletProvider";
 
 export default function OnboardingPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className="min-h-screen flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            }
+        >
+            <OnboardingContent />
+        </Suspense>
+    );
+}
+
+function OnboardingContent() {
     const [step, setStep] = useState(1);
     const router = useRouter();
     const searchParams = useSearchParams();
